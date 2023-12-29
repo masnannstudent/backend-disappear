@@ -183,5 +183,9 @@ func main() {
 	routes.RouteDashboard(e, dashboardHandler, jwtService, userService)
 	routes.RouteHomepage(e, homeHandler, jwtService, userService)
 	routes.RouteFcm(e, fcmHandler, jwtService, userService)
-	e.Logger.Fatalf(e.Start(fmt.Sprintf(":%d", initConfig.ServerPort)).Error())
+	port := os.Getenv("PORT")
+	if port == "" {
+	    port = "8000" 
+	}
+	e.Logger.Fatalf(e.Start(":" + port).Error())
 }
