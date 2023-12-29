@@ -189,6 +189,7 @@ func (r *OrderRepository) GetAllOrdersByUserID(userID uint64) ([]*entities.Order
 		Preload("OrderDetails.Product").
 		Preload("OrderDetails.Product.ProductPhotos").
 		Where("user_id = ? AND deleted_at IS NULL", userID).
+		Order("created_at DESC").
 		Find(&orders).Error; err != nil {
 		return nil, err
 	}
@@ -203,7 +204,7 @@ func (r *OrderRepository) GetAllOrdersWithFilter(userID uint64, orderStatus stri
 		Preload("OrderDetails").
 		Preload("OrderDetails.Product").
 		Preload("OrderDetails.Product.ProductPhotos").
-		Where("user_id = ? AND order_status = ? AND deleted_at IS NULL", userID, orderStatus).
+		Where("user_id = ? AND LOWER(order_status) = LOWER(?) AND deleted_at IS NULL", userID, orderStatus).
 		Order("created_at DESC").
 		Find(&orders).Error; err != nil {
 		return nil, err
