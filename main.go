@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/capstone-kelompok-7/backend-disappear/utils/database/seeder"
 	"github.com/capstone-kelompok-7/backend-disappear/utils/email"
 	"github.com/capstone-kelompok-7/backend-disappear/utils/sendnotif"
+	"os"
 
 	"github.com/capstone-kelompok-7/backend-disappear/config"
 	hAddress "github.com/capstone-kelompok-7/backend-disappear/module/feature/address/handler"
@@ -185,7 +185,7 @@ func main() {
 	routes.RouteFcm(e, fcmHandler, jwtService, userService)
 	port := os.Getenv("PORT")
 	if port == "" {
-	    port = "8000" 
+		port = "8000"
 	}
 	e.Logger.Fatalf(e.Start(":" + port).Error())
 }
