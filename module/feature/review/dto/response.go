@@ -65,7 +65,7 @@ type ReviewDetail struct {
 	Description  string    `json:"description"`
 }
 
-func FormatReviewDetails(reviews []*entities.ReviewDetail) []*ReviewDetail {
+func FormatReviewDetails(reviews []*ReviewDetail) []*ReviewDetail {
 	formattedReviews := make([]*ReviewDetail, 0)
 
 	for _, review := range reviews {
