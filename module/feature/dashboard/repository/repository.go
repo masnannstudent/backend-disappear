@@ -26,10 +26,11 @@ func (r *DashboardRepository) CountProducts() (int64, error) {
 	}
 	return count, nil
 }
+
 func (r *DashboardRepository) CountUsers() (int64, error) {
 	var count int64
 	if err := r.db.Model(&entities.UserModels{}).
-		Where("is_verified = ? AND role = ?", 1, "customer").
+		Where("is_verified = ? AND role = ?", true, "customer").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -39,7 +40,7 @@ func (r *DashboardRepository) CountUsers() (int64, error) {
 func (r *DashboardRepository) CountOrder() (int64, error) {
 	var count int64
 	if err := r.db.Model(&entities.OrderModels{}).
-		Where("order_status = ? AND payment_status = ?", "proses", "konfirmasi").
+		Where("payment_status = ?", "Konfirmasi").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -52,8 +53,7 @@ func (r *DashboardRepository) CountIncome() (float64, error) {
 	firstDay := time.Now().AddDate(0, 0, -time.Now().Day()+1).Format("2006-01-02")
 	lastDay := time.Now().AddDate(0, 1, -time.Now().Day()).Format("2006-01-02")
 	if err := r.db.Model(&entities.OrderModels{}).
-		Where("order_status = ? AND payment_status = ? AND created_at BETWEEN ? AND ?",
-			"proses", "konfirmasi", firstDay, lastDay).
+		Where("payment_status = ? AND created_at BETWEEN ? AND ?", "Konfirmasi", firstDay, lastDay).
 		Select("SUM(total_amount_paid)").
 		Row().Scan(&totalAmount); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -67,7 +67,7 @@ func (r *DashboardRepository) CountIncome() (float64, error) {
 func (r *DashboardRepository) CountTotalGram() (int64, error) {
 	var totalGramPlastic int64
 	if err := r.db.Model(&entities.OrderModels{}).
-		Where("payment_status = ? AND order_status = ?", "konfirmasi", "proses").
+		Where("payment_status = ?", "Konfirmasi").
 		Select("COALESCE(SUM(grand_total_gram_plastic), 0)").
 		Scan(&totalGramPlastic).Error; err != nil {
 		return 0, err
@@ -94,7 +94,7 @@ func (r *DashboardRepository) GetProductWithMaxReviews() ([]*entities.ProductMod
 func (r *DashboardRepository) GetGramPlasticStat(startOfWeek, endOfWeek time.Time) (uint64, error) {
 	var gramTotalCount uint64
 	if err := r.db.Model(&entities.OrderModels{}).
-		Where("payment_status = 'konfirmasi'").
+		Where("payment_status = 'Konfirmasi'").
 		Where("created_at BETWEEN ? AND ?", startOfWeek, endOfWeek).
 		Select("COALESCE(SUM(grand_total_gram_plastic), 0)").
 		Scan(&gramTotalCount).
