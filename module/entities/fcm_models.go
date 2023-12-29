@@ -3,9 +3,9 @@ package entities
 import "time"
 
 type FcmModels struct {
-	ID        uint64      `gorm:"column:id;type:BIGINT UNSIGNED;primaryKey" json:"id"`
+	ID        uint64      `gorm:"column:id;type:BIGINT;primaryKey" json:"id"`
 	OrderID   string      `gorm:"column:order_id;type:VARCHAR(255)" json:"order_id"`
-	UserID    uint64      `gorm:"column:user_id;type:BIGINT UNSIGNED" json:"user_id"`
+	UserID    uint64      `gorm:"column:user_id;type:BIGINT" json:"user_id"`
 	Title     string      `gorm:"column:title;type:varchar(255)" json:"title"`
 	Body      string      `gorm:"column:body;type:text" json:"body"`
 	CreatedAt time.Time   `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`

@@ -22,7 +22,8 @@ func NewRedisClient(cnf config.Config) caching.CacheRepository {
 
 	_, err := rdb.Ping(context.Background()).Result()
 	if err != nil {
-		logrus.Fatalf("Error koneksi Redis: %s", err.Error())
+		//logrus.Fatalf("Error koneksi Redis: %s", err.Error())
+		logrus.Error("Error koneksi Redis: %s", err.Error())
 	}
 
 	logrus.Info("Redis connected successfully")
