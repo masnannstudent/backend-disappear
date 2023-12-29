@@ -11,8 +11,8 @@ type ArticleModels struct {
 	Content   string     `gorm:"column:content;type:text" json:"content"`
 	Author    string     `gorm:"column:author;type:varchar(255)" json:"author"`
 	Views     uint64     `gorm:"column:views" json:"views"`
-	CreatedAt time.Time  `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time  `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt time.Time  `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
 	DeletedAt *time.Time `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 }
 

@@ -22,8 +22,8 @@ type VoucherModels struct {
 	MinPurchase uint64     `gorm:"column:min_purchase" json:"min_purchase"`
 	Stock       uint64     `gorm:"column:stock" json:"stock"`
 	Status      string     `gorm:"column:status;type:VARCHAR(255)" json:"status"`
-	CreatedAt   time.Time  `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt   time.Time  `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt   time.Time  `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt   time.Time  `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
 	DeletedAt   *time.Time `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 }
 

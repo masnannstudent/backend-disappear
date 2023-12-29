@@ -22,9 +22,9 @@ type OrderModels struct {
 	PaymentMethod         string               `gorm:"column:payment_method;type:VARCHAR(255)" json:"payment_method"`
 	ExtraInfo             string               `gorm:"column:extra_info;type:VARCHAR(255)" json:"extra_info"`
 	StatusOrderDate       time.Time            `gorm:"column:status_order_date;type:timestamp" json:"status_order_date"`
-	CreatedAt             time.Time            `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt             time.Time            `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
-	DeletedAt             *time.Time           `gorm:"column:deleted_at;index" json:"deleted_at"`
+	CreatedAt             time.Time            `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt             time.Time            `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
+	DeletedAt             *time.Time           `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 	Address               AddressModels        `gorm:"foreignKey:AddressID" json:"address"`
 	User                  UserModels           `gorm:"foreignKey:UserID" json:"user"`
 	Voucher               VoucherModels        `gorm:"foreignKey:VoucherID" json:"voucher"`

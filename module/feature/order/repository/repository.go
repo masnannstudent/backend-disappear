@@ -30,7 +30,8 @@ func (r *OrderRepository) FindByName(page, perPage int, name string) ([]*entitie
 	offset := (page - 1) * perPage
 	query := r.db.Preload("User").Offset(offset).Limit(perPage).
 		Joins("JOIN users ON users.id = orders.user_id").
-		Where("orders.deleted_at IS NULL")
+		Where("orders.deleted_at IS NULL").
+		Order("created_at DESC")
 
 	if name != "" {
 		query = query.Where("users.name LIKE ?", "%"+name+"%")
@@ -203,6 +204,7 @@ func (r *OrderRepository) GetAllOrdersWithFilter(userID uint64, orderStatus stri
 		Preload("OrderDetails.Product").
 		Preload("OrderDetails.Product.ProductPhotos").
 		Where("user_id = ? AND order_status = ? AND deleted_at IS NULL", userID, orderStatus).
+		Order("created_at DESC").
 		Find(&orders).Error; err != nil {
 		return nil, err
 	}
@@ -230,7 +232,7 @@ func (r *OrderRepository) Tracking(courier, awb string) (map[string]interface{},
 
 func (r *OrderRepository) GetOrderByDateRange(startDate, endDate time.Time, offset, limit int) ([]*entities.OrderModels, error) {
 	var orders []*entities.OrderModels
-	if err := r.db.Preload("User").Where("created_at BETWEEN ? AND ? AND deleted_at IS NULL", startDate, endDate).Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
+	if err := r.db.Preload("User").Where("created_at BETWEEN ? AND ? AND deleted_at IS NULL", startDate, endDate).Order("created_at DESC").Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
 		return nil, err
 	}
 	return orders, nil
@@ -240,6 +242,7 @@ func (r *OrderRepository) GetOrderCountByDateRange(startDate, endDate time.Time)
 	var count int64
 	if err := r.db.Model(&entities.OrderModels{}).
 		Where("created_at BETWEEN ? AND ? AND deleted_at IS NULL", startDate, endDate).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -248,7 +251,10 @@ func (r *OrderRepository) GetOrderCountByDateRange(startDate, endDate time.Time)
 
 func (r *OrderRepository) GetOrderByOrderStatus(orderStatus string, offset, limit int) ([]*entities.OrderModels, error) {
 	var orders []*entities.OrderModels
-	if err := r.db.Preload("User").Where("order_status = ? AND deleted_at IS NULL", orderStatus).Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
+	if err := r.db.Preload("User").Where("order_status = ? AND deleted_at IS NULL", orderStatus).
+		Order("created_at DESC").
+		Offset(offset).Limit(limit).
+		Find(&orders).Error; err != nil {
 		return nil, err
 	}
 	return orders, nil
@@ -258,6 +264,7 @@ func (r *OrderRepository) GetOrderCountByByOrderStatus(orderStatus string) (int6
 	var count int64
 	if err := r.db.Model(&entities.OrderModels{}).
 		Where("order_status = ? AND deleted_at IS NULL", orderStatus).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -267,6 +274,7 @@ func (r *OrderRepository) GetOrderCountByByOrderStatus(orderStatus string) (int6
 func (r *OrderRepository) GetOrderByDateRangeAndStatus(startDate, endDate time.Time, status string, offset, limit int) ([]*entities.OrderModels, error) {
 	var orders []*entities.OrderModels
 	if err := r.db.Preload("User").Where("created_at BETWEEN ? AND ? AND order_status = ? AND deleted_at IS NULL", startDate, endDate, status).
+		Order("created_at DESC").
 		Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
 		return nil, err
 	}
@@ -277,6 +285,7 @@ func (r *OrderRepository) GetOrderCountByDateRangeAndStatus(startDate, endDate t
 	var count int64
 	if err := r.db.Model(&entities.OrderModels{}).
 		Where("created_at BETWEEN ? AND ? AND order_status = ? AND deleted_at IS NULL", startDate, endDate, status).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -289,6 +298,7 @@ func (r *OrderRepository) GetOrderByDateRangeAndStatusAndSearch(startDate, endDa
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("orders.created_at BETWEEN ? AND ? AND orders.order_status = ? AND users.name LIKE ? AND orders.deleted_at IS NULL",
 			startDate, endDate, status, "%"+search+"%").
+		Order("created_at DESC").
 		Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
 		return nil, err
 	}
@@ -301,6 +311,7 @@ func (r *OrderRepository) GetOrderCountByDateRangeAndStatusAndSearch(startDate, 
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("orders.created_at BETWEEN ? AND ? AND orders.order_status = ? AND users.name LIKE ? AND orders.deleted_at IS NULL",
 			startDate, endDate, status, "%"+search+"%").
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -313,6 +324,7 @@ func (r *OrderRepository) GetOrdersBySearchAndDateRange(startDate, endDate time.
 		Preload("User").
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("orders.created_at BETWEEN ? AND ? AND users.name LIKE ? AND orders.deleted_at IS NULL", startDate, endDate, "%"+search+"%").
+		Order("created_at DESC").
 		Offset(offset).
 		Limit(limit).
 		Find(&orders).Error; err != nil {
@@ -326,6 +338,7 @@ func (r *OrderRepository) GetOrderCountBySearchAndDateRange(startDate, endDate t
 	if err := r.db.Model(&entities.OrderModels{}).
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("orders.created_at BETWEEN ? AND ? AND users.name LIKE ? AND orders.deleted_at IS NULL", startDate, endDate, "%"+search+"%").
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -338,6 +351,7 @@ func (r *OrderRepository) GetOrdersBySearchAndStatus(status, search string, offs
 		Preload("User").
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("users.name LIKE ? AND orders.order_status = ? AND orders.deleted_at IS NULL", "%"+search+"%", status).
+		Order("created_at DESC").
 		Offset(offset).
 		Limit(limit).
 		Find(&orders).Error; err != nil {
@@ -351,6 +365,7 @@ func (r *OrderRepository) GetOrdersCountBySearchAndStatus(status, search string)
 	if err := r.db.Model(&entities.OrderModels{}).
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("users.name LIKE ? AND orders.order_status = ? AND orders.deleted_at IS NULL", "%"+search+"%", status).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -363,6 +378,7 @@ func (r *OrderRepository) GetOrderBySearchAndPaymentStatus(status, search string
 		Preload("User").
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("users.name LIKE ? AND orders.payment_status = ? AND orders.deleted_at IS NULL", "%"+search+"%", status).
+		Order("created_at DESC").
 		Offset(offset).
 		Limit(limit).
 		Find(&orders).Error; err != nil {
@@ -376,6 +392,7 @@ func (r *OrderRepository) GetOrderCountBySearchAndPaymentStatus(status, search s
 	if err := r.db.Model(&entities.OrderModels{}).
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("users.name LIKE ? AND orders.payment_status = ? AND orders.deleted_at IS NULL", "%"+search+"%", status).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -388,6 +405,7 @@ func (r *OrderRepository) GetOrderByDateRangeAndPaymentStatusAndSearch(startDate
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("orders.created_at BETWEEN ? AND ? AND orders.payment_status = ? AND users.name LIKE ? AND orders.deleted_at IS NULL",
 			startDate, endDate, status, "%"+search+"%").
+		Order("created_at DESC").
 		Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
 		return nil, err
 	}
@@ -400,6 +418,7 @@ func (r *OrderRepository) GetOrderCountByDateRangeAndPaymentStatusAndSearch(star
 		Joins("JOIN users ON users.id = orders.user_id").
 		Where("orders.created_at BETWEEN ? AND ? AND orders.payment_status = ? AND users.name LIKE ? AND orders.deleted_at IS NULL",
 			startDate, endDate, status, "%"+search+"%").
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -408,7 +427,9 @@ func (r *OrderRepository) GetOrderCountByDateRangeAndPaymentStatusAndSearch(star
 
 func (r *OrderRepository) GetOrderByPaymentStatus(orderStatus string, offset, limit int) ([]*entities.OrderModels, error) {
 	var orders []*entities.OrderModels
-	if err := r.db.Preload("User").Where("payment_status = ? AND deleted_at IS NULL", orderStatus).Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
+	if err := r.db.Preload("User").Where("payment_status = ? AND deleted_at IS NULL", orderStatus).
+		Order("created_at DESC").
+		Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
 		return nil, err
 	}
 	return orders, nil
@@ -418,6 +439,7 @@ func (r *OrderRepository) GetOrderCountByByPaymentStatus(orderStatus string) (in
 	var count int64
 	if err := r.db.Model(&entities.OrderModels{}).
 		Where("payment_status = ? AND deleted_at IS NULL", orderStatus).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -427,6 +449,7 @@ func (r *OrderRepository) GetOrderCountByByPaymentStatus(orderStatus string) (in
 func (r *OrderRepository) GetOrderByDateRangeAndPaymentStatus(startDate, endDate time.Time, status string, offset, limit int) ([]*entities.OrderModels, error) {
 	var orders []*entities.OrderModels
 	if err := r.db.Preload("User").Where("created_at BETWEEN ? AND ? AND payment_status = ? AND deleted_at IS NULL", startDate, endDate, status).
+		Order("created_at DESC").
 		Offset(offset).Limit(limit).Find(&orders).Error; err != nil {
 		return nil, err
 	}
@@ -437,6 +460,7 @@ func (r *OrderRepository) GetOrderCountByDateRangeAndPaymentStatus(startDate, en
 	var count int64
 	if err := r.db.Model(&entities.OrderModels{}).
 		Where("created_at BETWEEN ? AND ? AND payment_status = ? AND deleted_at IS NULL", startDate, endDate, status).
+		Order("created_at DESC").
 		Count(&count).Error; err != nil {
 		return 0, err
 	}

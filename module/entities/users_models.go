@@ -19,8 +19,8 @@ type UserModels struct {
 	IsVerified     bool            `gorm:"column:is_verified;default:false" json:"is_verified"`
 	LastLogin      time.Time       `gorm:"column:last_login;type:timestamp;default:CURRENT_TIMESTAMP" json:"last_login"`
 	DeviceToken    string          `gorm:"column:device_token;type:VARCHAR(255)" json:"device_token"`
-	CreatedAt      time.Time       `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt      time.Time       `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt      time.Time       `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt      time.Time       `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
 	DeletedAt      *time.Time      `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 	Address        []AddressModels `gorm:"foreignKey:UserID" json:"addresses"`
 	Reviews        []ReviewModels  `gorm:"foreignKey:UserID" json:"reviews"`
@@ -33,8 +33,8 @@ type AddressModels struct {
 	Phone        string     `gorm:"column:phone;type:VARCHAR(255)" json:"phone"`
 	Address      string     `gorm:"column:address;type:VARCHAR(255)" json:"address"`
 	IsPrimary    bool       `gorm:"column:is_primary;type:BOOLEAN" json:"is_primary"`
-	CreatedAt    time.Time  `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt    time.Time  `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt    time.Time  `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt    time.Time  `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
 	DeletedAt    *time.Time `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 }
 

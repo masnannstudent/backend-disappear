@@ -10,8 +10,8 @@ type ReviewModels struct {
 	Rating      uint64              `gorm:"column:rating" json:"rating"`
 	Description string              `gorm:"column:description;type:text" json:"description"`
 	Date        time.Time           `gorm:"column:date;type:TIMESTAMP" json:"date"`
-	CreatedAt   time.Time           `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt   time.Time           `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt   time.Time           `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt   time.Time           `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
 	DeletedAt   *time.Time          `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 	Photos      []ReviewPhotoModels `gorm:"foreignKey:ReviewID" json:"photos"`
 }
@@ -20,8 +20,8 @@ type ReviewPhotoModels struct {
 	ID        uint64     `gorm:"column:id;primaryKey" json:"id"`
 	ReviewID  uint64     `gorm:"column:review_id" json:"review_id"`
 	ImageURL  string     `gorm:"column:url;type:varchar(255)" json:"url"`
-	CreatedAt time.Time  `gorm:"column:created_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time  `gorm:"column:updated_at;type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt time.Time  `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;type:timestamp" json:"updated_at"`
 	DeletedAt *time.Time `gorm:"column:deleted_at;type:TIMESTAMP NULL;index" json:"deleted_at"`
 }
 
