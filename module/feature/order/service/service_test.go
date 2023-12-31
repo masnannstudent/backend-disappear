@@ -344,15 +344,17 @@ func TestOrderService_ProcessGatewayPayment(t *testing.T) {
 	orderID := "order123"
 	totalAmountPaid := uint64(50000)
 	paymentMethod := "credit_card"
+	name := "test"
+	email := "test@gmail.com"
 
 	t.Run("Success Case - Process Gateway Payment", func(t *testing.T) {
 		expectedResult := map[string]interface{}{
 			"payment_status": "success",
 		}
 
-		orderRepo.On("ProcessGatewayPayment", totalAmountPaid, orderID, paymentMethod).Return(expectedResult, nil).Once()
+		orderRepo.On("ProcessGatewayPayment", totalAmountPaid, orderID, paymentMethod, name, email).Return(expectedResult, nil).Once()
 
-		result, err := orderService.ProcessGatewayPayment(totalAmountPaid, orderID, paymentMethod)
+		result, err := orderService.ProcessGatewayPayment(totalAmountPaid, orderID, paymentMethod, name, email)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
@@ -362,9 +364,9 @@ func TestOrderService_ProcessGatewayPayment(t *testing.T) {
 
 	t.Run("Failed Case - Payment Failure", func(t *testing.T) {
 		expectedErr := errors.New("payment failed")
-		orderRepo.On("ProcessGatewayPayment", totalAmountPaid, orderID, paymentMethod).Return(nil, expectedErr).Once()
+		orderRepo.On("ProcessGatewayPayment", totalAmountPaid, orderID, paymentMethod, name, email).Return(nil, expectedErr).Once()
 
-		result, err := orderService.ProcessGatewayPayment(totalAmountPaid, orderID, paymentMethod)
+		result, err := orderService.ProcessGatewayPayment(totalAmountPaid, orderID, paymentMethod, name, email)
 
 		assert.Error(t, err)
 		assert.Nil(t, result)
