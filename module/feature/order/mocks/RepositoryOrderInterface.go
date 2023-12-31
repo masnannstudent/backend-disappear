@@ -772,25 +772,25 @@ func (_m *RepositoryOrderInterface) GetTotalOrderCount() (int64, error) {
 	return r0, r1
 }
 
-// ProcessGatewayPayment provides a mock function with given fields: totalAmountPaid, orderID, paymentMethod
-func (_m *RepositoryOrderInterface) ProcessGatewayPayment(totalAmountPaid uint64, orderID string, paymentMethod string) (interface{}, error) {
-	ret := _m.Called(totalAmountPaid, orderID, paymentMethod)
+// ProcessGatewayPayment provides a mock function with given fields: totalAmountPaid, orderID, paymentMethod, name, email
+func (_m *RepositoryOrderInterface) ProcessGatewayPayment(totalAmountPaid uint64, orderID string, paymentMethod string, name string, email string) (interface{}, error) {
+	ret := _m.Called(totalAmountPaid, orderID, paymentMethod, name, email)
 
 	var r0 interface{}
 	var r1 error
-	if rf, ok := ret.Get(0).(func(uint64, string, string) (interface{}, error)); ok {
-		return rf(totalAmountPaid, orderID, paymentMethod)
+	if rf, ok := ret.Get(0).(func(uint64, string, string, string, string) (interface{}, error)); ok {
+		return rf(totalAmountPaid, orderID, paymentMethod, name, email)
 	}
-	if rf, ok := ret.Get(0).(func(uint64, string, string) interface{}); ok {
-		r0 = rf(totalAmountPaid, orderID, paymentMethod)
+	if rf, ok := ret.Get(0).(func(uint64, string, string, string, string) interface{}); ok {
+		r0 = rf(totalAmountPaid, orderID, paymentMethod, name, email)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(interface{})
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(uint64, string, string) error); ok {
-		r1 = rf(totalAmountPaid, orderID, paymentMethod)
+	if rf, ok := ret.Get(1).(func(uint64, string, string, string, string) error); ok {
+		r1 = rf(totalAmountPaid, orderID, paymentMethod, name, email)
 	} else {
 		r1 = ret.Error(1)
 	}

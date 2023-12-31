@@ -34,7 +34,7 @@ func (r *FcmRepository) CreateFcm(fcm *entities.FcmModels) (*entities.FcmModels,
 
 func (r *FcmRepository) GetFcmByIdUser(id uint64) ([]*entities.FcmModels, error) {
 	var fcm []*entities.FcmModels
-	err := r.db.Where("deleted_at IS NULL && user_id = ?", id).Find(&fcm).Error
+	err := r.db.Where("deleted_at IS NULL AND user_id = ?", id).Find(&fcm).Error
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (r *FcmRepository) GetFcmByIdUser(id uint64) ([]*entities.FcmModels, error)
 func (r *FcmRepository) GetFcmById(id uint64) (*entities.FcmModels, error) {
 	var fcm entities.FcmModels
 
-	if err := r.db.Where("deleted_at IS NULL && id = ?", id).First(&fcm).Error; err != nil {
+	if err := r.db.Where("deleted_at IS NULL AND id = ?", id).First(&fcm).Error; err != nil {
 		return nil, err
 	}
 
