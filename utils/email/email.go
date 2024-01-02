@@ -1,12 +1,9 @@
 package email
 
 import (
-	"errors"
 	"github.com/wneessen/go-mail"
 	"html/template"
 	"os"
-	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 )
@@ -48,20 +45,15 @@ func (s *Sender) EmailService(email, otp string) error {
 		Email: email,
 	}
 
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		return errors.New("Failed to get the current file path")
-	}
+	templatePath := "/app/utils/email/template.html"
 
-	templatePath := filepath.Join(filepath.Dir(filename), "template.html")
-
-	tmpl, err := template.New("emailTemplate").ParseFiles(templatePath)
+	tmpl, err := template.ParseFiles(templatePath)
 	if err != nil {
 		return err
 	}
 
 	var bodyContent strings.Builder
-	if err := tmpl.ExecuteTemplate(&bodyContent, "template.html", emailTemplate); err != nil {
+	if err := tmpl.Execute(&bodyContent, emailTemplate); err != nil {
 		return err
 	}
 
